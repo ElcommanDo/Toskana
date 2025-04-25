@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>نموذج العميل</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"], input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    table th, table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #eee;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 30px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .btn-secondary {
+      background-color: #2196F3;
+    }
+
+    .btn-secondary:hover {
+      background-color: #1976D2;
+    }
+  </style>
+
+  <script>
+   function addProductRow() {
+  const table = document.getElementById('product_table_body');
+  const row = document.createElement('tr');
+
+  row.innerHTML = `
+    <td><input type="text" name="product_title[]" required></td>
+    <td><input type="text" name="total_price[]" required></td>
+    <td><input type="text" name="notes[]"></td>
+    <td><input type="file" name="image"></td>
+    <td><button type="button" style="background-color: white" onclick="removeRow(this)">🗑️</button></td>
+  `;
+
+  table.appendChild(row);
+}
+
+  </script>
+  <script>
+    function removeRow(button) {
+      const row = button.closest('tr');
+      row.remove();
+    }
+  </script>
+  
+</head>
+<body>
+  {% include "navbar.html" %}
+  <h2>نموذج بيانات العميل</h2>
+
+  <form method="POST", enctype="multipart/form-data">
+    {% csrf_token %}
+    <label for="customer_name">اسم العميل</label>
+    <input type="text" id="customer_name" name="client_name" required>
+
+    <label for="national_id">الرقم القومي</label>
+    <input type="text" id="national_id" name="client_id" required>
+
+    <label for="address">عنوان العميل</label>
+    <input type="text" id="address" name="client_address" required>
+
+    <label for="contract_date">تاريخ العقد</label>
+    <input type="date" id="contract_date" name="contract_date" required>
+
+    <label for="recieve_date">تاريخ التسليم</label>
+    <input type="date" id="recieve_date" name="recieve_date" required>
+
+    <h3>الأصناف</h3>
+    <table>
+      <thead>
+        <tr>
+
+          <th>اسم الصنف ومواصفاته</th>
+          <th>الإجمالي</th>
+          <th>ملاحظات</th>
+          <th>صوره المنتج</th>
+          <th>حذف</th>
+        </tr>
+      </thead>
+      <tbody id="product_table_body">
+        <tr>
+          <td><input type="text" name="product_title[]" required></td>
+          <td><input type="text" name="total_price[]" required></td>
+          <td><input type="text" name="notes[]"></td>
+          <td><input type="file" name="image"></td>
+          <td><button style="background-color: white" type="button" onclick="removeRow(this)">🗑️</button></td> <!-- remove button -->
+        </tr>
+      </tbody>
+    </table>
+
+    <button type="button" class="btn-secondary" onclick="addProductRow()">إضافة صف</button>
+    <button type="submit">إرسال</button>
+  </form>
+</body>
+</html>

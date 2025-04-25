@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تفاصيل العقد</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f7f9fc;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      background-color: #fdfdfd;
+    }
+
+    .card p {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 15px;
+    }
+
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #eaeaea;
+      padding: 12px;
+    }
+
+    td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    .download-btn {
+      display: block;
+      width: 200px;
+      margin: 30px auto 0;
+      background-color: #3498db;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    .download-btn:hover {
+      background-color: #2980b9;
+    }
+    .image-hover-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .image-hover-preview {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 100%;
+    z-index: 10;
+    width: 300px;
+    border: 1px solid #ccc;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+
+  .image-hover-container:hover .image-hover-preview {
+    display: block;
+  }
+  </style>
+</head>
+<body>
+   
+  <div class="container">
+    
+      <a href="{%url 'home' %}" class="download-btn" style="float: right;" >Home</a>
+ 
+    <br><br><br>
+    <h2 style="text-align: center;">تفاصيل العقد</h2>
+
+    <div class="card">
+      <p><strong>اسم العميل:</strong> {{ contract.client_name }}</p>
+      <p><strong>الرقم القومي:</strong> {{ contract.client_id }}</p>
+      <p><strong>عنوان العميل:</strong> {{ contract.client_address }}</p>
+      <p><strong>تاريخ العقد:</strong> {{ contract.contract_date }}</p>
+      <p><strong>تاريخ التسليم:</strong> {{ contract.recieve_date }}</p>
+      <p><strong>إجمالي العقد:</strong> {{ contract.contract_total }} ج.م</p>
+      <p><strong> المتبقى:</strong> {{ contract.remain }} ج.م</p>
+      
+    </div>
+
+    <h3>الأصناف</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>صوره المنتج</th>
+          <th>اسم الصنف ومواصفاته</th>
+          <th>الإجمالي</th>
+          <th>ملاحظات</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in contract.products.all %}
+          <tr>
+            <td>
+              <div class="image-hover-container">
+                <img src="{% if product.product_image %}{{ product.product_image.url }}{% endif %}" width="90px">
+                <div class="image-hover-preview">
+                  <img src="{% if product.product_image %}{{ product.product_image.url }}{% endif %}" width="100%">
+                </div>
+              </div>
+            </td>
+            <td>{{ product.product_title }}</td>
+            <td>{{ product.total_price }}</td>
+            <td>{{ product.notes }}</td>
+          </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+    <br>
+    <h4> المدفوعات</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>تاريخ عمليه الدفع</th>
+          <th>المبلغ المدفوع</th>
+          <th>اسم الموظف</th>
+          <th>ملاحظات</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        {% for obj in contract.deliverables.all %}
+          <tr>
+            <td>{{ obj.delivery_date }}</td>
+            <td>{{ obj.amount }}</td>
+            <td> {{obj.employee_name}}</td>
+            <td>{{ obj.note }}</td>
+
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <a href="{%url 'contract_template' contract.pk %}" class="download-btn">تحميل العقد PDF</a>
+  </div>
+
+</body>
+</html>
