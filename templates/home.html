@@ -2,11 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>العقود</title>
+  <title>الرئيسية</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: 'cairo' !important;
       background-color: #f4f4f4;
       margin: 0;
       padding: 40px;
@@ -75,6 +77,26 @@
         <h2>العقود</h2>
       </div>
     </a>
+    <a href="{% url 'expensses' %}">
+      <div class="card">
+        <i class="fas fa-money-bill-wave"></i>
+        <h2>المصروفـات</h2>
+      </div>
+    </a>
+    <a href="{% url 'deliverable_contract' %}">
+      <div class="card">
+        <i class="fas fa-check"></i>
+        <h2>التسليمات</h2>
+      </div>
+    </a>
+    
+    <a href="{% url 'user_list' %}">
+      <div class="card">
+        <i class="fas fa-users"></i>
+        <h2>المستخدمين</h2>
+      </div>
+    </a>
+
   </div>
 </body>
 </html>

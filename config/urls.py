@@ -16,12 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app.views import login_view, create_contract, home,delete_contract, contract_list,contract_details, contract_template, create_deliverable, update_contract, update_contract_image
+from app.views import login_view,update_expense, delete_expense, expensses_list, deliver_contract, deliverable_contract, create_contract,update_user, delete_user, logout_user, user_list, home,delete_contract, contract_list,contract_details, contract_template, create_deliverable, update_contract, update_contract_image
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', login_view, name='login'),
+    path('logout-user', logout_user, name='logout'),
+    
     path('home/', home, name='home'),
     path('contract-details/<int:pk>/', contract_details, name='contract_details'),
     path('contract-template/<int:pk>/', contract_template, name='contract_template'),
@@ -33,6 +35,16 @@ urlpatterns = [
     
     path('contracts/', contract_list, name='contracts'),
     
-    path('create-contract/', create_contract, name='create_contract')
+    path('create-contract/', create_contract, name='create_contract'),
+    path('users-list/', user_list, name='user_list'),
+    path('user-update/<int:pk>/', update_user, name='user_list'),
+    path('user-delete/<int:pk>/', delete_user, name='user_list'),
+    path('deliver-contract/<int:pk>/', deliver_contract, name='deliver_contract'),
+    
+    path('deliverable-contract/', deliverable_contract, name='deliverable_contract'),
+    path('expensses/', expensses_list, name='expensses'),
+    path('update-expense/', update_expense, name='update_expense'),
+    path('delete_expense/', delete_expense, name='delete_expense'),
+    
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

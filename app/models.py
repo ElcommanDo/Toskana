@@ -20,6 +20,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=15, unique=True)
+    name = models.CharField(default='', max_length=200) 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
@@ -42,6 +43,7 @@ class Contract(models.Model):
     remain= models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     employee_name = models.CharField(max_length=200, default=' ')
     contract_header_image = models.ImageField(upload_to='contracts', default='logo.jpg')
+    is_deliver = models.BooleanField(default=False)
     
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -68,3 +70,12 @@ class Deliverable(models.Model):
     employee_name = models.CharField(max_length=200, default='----')
 
 
+class Expensses(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at =  models.DateTimeField(auto_now=True)
+    description = models.TextField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    direct_to = models.CharField(max_length=220)
+
+    class Meta:
+        ordering = ('created_at',)
