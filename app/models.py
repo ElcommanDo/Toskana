@@ -63,7 +63,7 @@ class Product(models.Model):
 
 
 class Deliverable(models.Model):
-    contract = models.ForeignKey(Contract, on_delete=models.PROTECT, related_name='deliverables')
+    contract = models.ForeignKey(Contract, on_delete=models.CASCADE, related_name='deliverables')
     delivery_date = models.DateField()
     amount = models.DecimalField(max_digits=9, decimal_places=2)
     note = models.TextField(default=' ')
