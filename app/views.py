@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .forms import ContractForm, ProductFormSet
 from .models import Product, Contract, Deliverable, Expensses
@@ -24,11 +25,16 @@ def login_view(request):
     return render(request, 'login.html')
 
 
-
-
+@login_required
 def home(request):
     return render(request, 'home.html')
+from itertools import zip_longest
+import decimal
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def create_contract(request):
     if request.method == 'POST':
         contract = Contract.objects.create(
@@ -37,34 +43,39 @@ def create_contract(request):
             client_address=request.POST['client_address'],
             contract_date=request.POST['contract_date'],
             recieve_date=request.POST['recieve_date'],
-            contract_total=0,  # calculate if needed
-            
+            contract_total=0,
         )
 
         titles = request.POST.getlist('product_title[]')
         totals = request.POST.getlist('total_price[]')
         notes = request.POST.getlist('notes[]')
         images = request.FILES.getlist('image[]')
-        
+
         total_amount = 0
-        for title, total, note, image in zip(titles, totals, notes, images):
+
+        for title, total, note, image in zip_longest(titles, totals, notes, images):
+            if not title or not total:
+                continue  # Skip rows with missing essential info
+
             Product.objects.create(
                 Contract=contract,
                 product_title=title,
                 total_price=decimal.Decimal(total),
-                notes=note,
-                product_image = image
+                notes=note or "",
+                product_image=image  # this will be None if not uploaded, which is fine
             )
-            total_amount+=decimal.Decimal(total)
+            total_amount += decimal.Decimal(total)
+
         contract.contract_total = total_amount
         contract.remain = total_amount
-        
         contract.save()
+
         return redirect(reverse('contract_details', kwargs={'pk': contract.id}))
-    
+
     return render(request, 'create_contract.html')
 
 
+@login_required
 def contract_list(request):
     contracts = Contract.objects.all()
 
@@ -91,6 +102,7 @@ def contract_list(request):
     })
 
 
+@login_required
 def contract_details(request, pk):
     contract = get_object_or_404(Contract, pk=pk)
     return render(request, 'contract_details.html', {
@@ -98,6 +110,7 @@ def contract_details(request, pk):
     })
 
 
+@login_required
 def contract_template(request, pk):
     contract = get_object_or_404(Contract, pk=pk)
     return render(request, 'contract_template.html', {
@@ -105,6 +118,7 @@ def contract_template(request, pk):
     })
 
 
+@login_required
 def create_deliverable(request, contract_id):
     try:
         data = request.POST
@@ -123,6 +137,7 @@ def create_deliverable(request, contract_id):
     return redirect(reverse('contract_details', kwargs={'pk': contract_id}))
 
 
+@login_required
 def update_contract(request, pk):
     contract = get_object_or_404(Contract, id=pk)
 
@@ -191,6 +206,7 @@ def update_contract(request, pk):
 
     return render(request, 'update_contract.html', {'contract': contract})
 
+@login_required
 def delete_contract(reqeust, pk):
     contract = get_object_or_404(Contract, pk=pk)
     contract.delete()
@@ -198,6 +214,7 @@ def delete_contract(reqeust, pk):
 
 
 
+@login_required
 def update_contract_image(request, pk):
     contract = get_object_or_404(Contract, pk=pk)
     contract.contract_header_image = request.FILES["image"]
@@ -207,6 +224,7 @@ def update_contract_image(request, pk):
 
 from .models import CustomUser
 
+@login_required
 def user_list(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -224,11 +242,13 @@ def user_list(request):
     
     return render(request, 'users.html', {'users': users})
 
+@login_required
 def logout_user(request):
     logout(request)
     return redirect('login')
 
 
+@login_required
 def update_user(request, pk):
     try:
         user = get_object_or_404(CustomUser, pk=pk)
@@ -238,6 +258,8 @@ def update_user(request, pk):
         return redirect('user_list')
     except:
         return HttpResponse("Something Went Wrong")
+
+@login_required
 def delete_user(request, pk):
     try:
         user = get_object_or_404(CustomUser, pk=pk)
@@ -248,6 +270,8 @@ def delete_user(request, pk):
     
 from django.db.models import Sum
 
+
+@login_required
 def deliverable_contract(request):
     query = request.GET
     month = query.get("month")
@@ -288,6 +312,7 @@ def deliverable_contract(request):
 
 
 
+@login_required
 def expensses_list(request):
     if request.method == "POST":
         Expensses.objects.create(
@@ -318,6 +343,8 @@ def expensses_list(request):
         "total": total
     })
 
+
+@login_required
 def deliver_contract(request, pk):
     contract = Contract.objects.get(pk=pk)
     contract.is_deliver = True
@@ -325,6 +352,7 @@ def deliver_contract(request, pk):
     return redirect(reverse('contract_details', kwargs={"pk":pk}))
 
 
+@login_required
 def update_expense(request):
     if request.method == 'POST':
         expense = get_object_or_404(Expensses, id=request.POST['id'])
@@ -334,6 +362,8 @@ def update_expense(request):
         expense.save()
     return redirect('expensses')  
 
+
+@login_required
 def delete_expense(request):
     if request.method == 'POST':
         expense = get_object_or_404(Expensses, id=request.POST['id'])

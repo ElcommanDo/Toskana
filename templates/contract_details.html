@@ -99,6 +99,23 @@
   .image-hover-container:hover .image-hover-preview {
     display: block;
   }
+  
+  .navbar {
+            background-color: #2c3e50 !important;
+            color: white !important;
+            padding: 15px 30px !important;
+            display: flex !important;
+            justify-content: space-between !important; 
+            align-items: center !important;
+            border-radius: 10px;
+        }
+        .navbar a {
+            color: white !important;
+            text-decoration: none !important;
+            font-weight: bold !important;
+            margin-left: 20px !important;
+        }
+
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600&display=swap" rel="stylesheet">
   
@@ -106,10 +123,15 @@
 <body>
    
   <div class="container">
-    
-      <a href="{%url 'home' %}" class="download-btn" style="float: right;" >Home</a>
- 
-    <br><br><br>
+    <div class="navbar">
+      <div>
+          <a href="{%url 'home' %}">الرئيسية</a>
+        
+      </div>
+      <div>
+          <a href="{%url 'logout' %}">تسجيل الخروج</a>
+      </div>
+  </div>
     <h2 style="text-align: center;">تفاصيل العقد</h2>
 
     <div class="card">
